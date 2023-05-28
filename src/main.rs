@@ -11,21 +11,27 @@ struct Cli {
     path: std::path::PathBuf,
 }
 
+fn scan_line(line: &str, pattern: &str) {
+    if line.contains(pattern) {
+        println!(":->> {}", line);
+    }
+}
+
 fn main() {
     let args = Cli::parse();
     let result = std::fs::read_to_string(&args.path);
+    // let content = std::fs::read_to_string(&args.path).expect("could not read file");
     match result {
         Ok(content) => {
             println!("File content: {}", content);
             println!("-------------------------");
             for line in content.lines() {
-                if line.contains(&args.pattern) {
-                    println!("{}", line);
-                }
+                scan_line(line, &args.pattern);
             }
         }
         Err(error) => {
             println!("Oh noes: {}", error);
+            panic!("Can't deal with {}, lets die here", error);
         }
     }
 }
